@@ -42,7 +42,7 @@ const {RNTextInputReset} = NativeModules;
 const isMobileSafari = Browser.isMobileSafari();
 
 /**
- * Broadcast that the user is typing. Debounced to limit how often we publish client events.
+ * Broadcast yamato that the user is typing. Debounced to limit how often we publish client events.
  * @param {String} reportID
  */
 const debouncedBroadcastUserIsTyping = _.debounce((reportID) => {
