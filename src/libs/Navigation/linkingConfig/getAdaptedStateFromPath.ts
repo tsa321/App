@@ -173,6 +173,7 @@ function getAdaptedState(state: PartialState<NavigationState<RootStackParamList>
     const welcomeVideoModalNavigator = state.routes.find((route) => route.name === NAVIGATORS.WELCOME_VIDEO_MODAL_NAVIGATOR);
     const attachmentsScreen = state.routes.find((route) => route.name === SCREENS.ATTACHMENTS);
     const featureTrainingModalNavigator = state.routes.find((route) => route.name === NAVIGATORS.FEATURE_TRANING_MODAL_NAVIGATOR);
+    const notFoundScreen = state.routes.find((route) => route.name === SCREENS.NOT_FOUND);
 
     if (rhpNavigator) {
         // Routes
@@ -215,7 +216,7 @@ function getAdaptedState(state: PartialState<NavigationState<RootStackParamList>
             metainfo,
         };
     }
-    if (lhpNavigator ?? onboardingModalNavigator ?? welcomeVideoModalNavigator ?? featureTrainingModalNavigator) {
+    if (lhpNavigator ?? onboardingModalNavigator ?? welcomeVideoModalNavigator ?? featureTrainingModalNavigator ?? notFoundScreen) {
         // Routes
         // - default bottom tab
         // - default central pane on desktop layout
@@ -254,6 +255,10 @@ function getAdaptedState(state: PartialState<NavigationState<RootStackParamList>
 
         if (featureTrainingModalNavigator) {
             routes.push(featureTrainingModalNavigator);
+        }
+
+        if (notFoundScreen) {
+            routes.push(notFoundScreen);
         }
 
         return {

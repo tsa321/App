@@ -320,6 +320,9 @@ const ONYXKEYS = {
     /** Onboarding Purpose selected by the user during Onboarding flow */
     ONBOARDING_PURPOSE_SELECTED: 'onboardingPurposeSelected',
 
+    /** Onboarding Purpose selected by the user during Onboarding flow */
+    ONBOARDING_LAST_VISITED: 'onboardingLastVisitedPath',
+
     /** Onboarding error message to be displayed to the user */
     ONBOARDING_ERROR_MESSAGE: 'onboardingErrorMessage',
 

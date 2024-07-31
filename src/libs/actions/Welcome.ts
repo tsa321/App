@@ -10,11 +10,14 @@ import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
 import type Onboarding from '@src/types/onyx/Onboarding';
 import type TryNewDot from '@src/types/onyx/TryNewDot';
+import navigationRef from '@libs/Navigation/navigationRef';
 
 type OnboardingData = Onboarding | [] | undefined;
 
 let isLoadingReportData = true;
 let tryNewDotData: TryNewDot | undefined;
+let selectedPurpose : string | undefined;
+let onboardingLastVisitedPath : string | undefined;
 
 type HasCompletedOnboardingFlowProps = {
     onCompleted?: () => void;
@@ -96,7 +99,7 @@ function handleHybridAppOnboarding() {
             isOnboardingFlowCompleted({
                 onNotCompleted: () =>
                     setTimeout(() => {
-                        Navigation.navigate(ROUTES.ONBOARDING_ROOT.route);
+                        Navigation.navigate(getInitialOnboardingPath());
                     }, variables.explanationModalDelay),
             }),
     });
@@ -140,6 +143,18 @@ function setOnboardingPolicyID(policyID?: string) {
     Onyx.set(ONYXKEYS.ONBOARDING_POLICY_ID, policyID ?? null);
 }
 
+function setOnboardingLastVisitedPath(value: string) {
+    Onyx.set(ONYXKEYS.ONBOARDING_LAST_VISITED, value ?? null);
+}
+
+function getInitialOnboardingPath() {
+    if (!selectedPurpose || !onboardingLastVisitedPath) {
+        return ROUTES.ONBOARDING_ROOT.getRoute();
+    }
+
+    return onboardingLastVisitedPath;
+}
+
 function completeHybridAppOnboarding() {
     const optimisticData: OnyxUpdate[] = [
         {
@@ -179,6 +194,29 @@ Onyx.connect({
     },
 });
 
+ONYXKEYS.ONBOARDING_LAST_VISITED
+Onyx.connect({
+    key: ONYXKEYS.ONBOARDING_PURPOSE_SELECTED,
+    callback: (value) => {
+        if (value === undefined) {
+            return;
+        }
+
+        selectedPurpose = value;
+    },
+});
+
+Onyx.connect({
+    key: ONYXKEYS.ONBOARDING_LAST_VISITED,
+    callback: (value) => {
+        if (value === undefined) {
+            return;
+        }
+
+        onboardingLastVisitedPath = value;
+    },
+});
+
 Onyx.connect({
     key: ONYXKEYS.IS_LOADING_REPORT_DATA,
     initWithStoredValues: false,
@@ -210,9 +248,11 @@ export {
     onServerDataReady,
     isOnboardingFlowCompleted,
     setOnboardingPurposeSelected,
+    getInitialOnboardingPath,
     resetAllChecks,
     setOnboardingAdminsChatReportID,
     setOnboardingPolicyID,
+    setOnboardingLastVisitedPath,
     completeHybridAppOnboarding,
     handleHybridAppOnboarding,
     setOnboardingErrorMessage,

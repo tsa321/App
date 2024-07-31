@@ -14,6 +14,7 @@ import hasCompletedGuidedSetupFlowSelector from '@libs/hasCompletedGuidedSetupFl
 import Log from '@libs/Log';
 import {getPathFromURL} from '@libs/Url';
 import {updateLastVisitedPath} from '@userActions/App';
+import * as Welcome from '@userActions/Welcome';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import type {Route} from '@src/ROUTES';
@@ -95,7 +96,7 @@ function NavigationRoot({authenticated, lastVisitedPath, initialUrl, onReady}: N
         // If the user haven't completed the flow, we want to always redirect them to the onboarding flow.
         // We also make sure that the user is authenticated.
         if (!hasCompletedGuidedSetupFlow && authenticated) {
-            const {adaptedState} = getAdaptedStateFromPath(ROUTES.ONBOARDING_ROOT.route, linkingConfig.config);
+            const {adaptedState} = getAdaptedStateFromPath(Welcome.getInitialOnboardingPath(), linkingConfig.config);
             return adaptedState;
         }
 
