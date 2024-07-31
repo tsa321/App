@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
-import OnboardingScreen from '@pages/OnboardingScreen';
 import useThemeStyles from '@hooks/useThemeStyles';
+import OnboardingScreen from '@pages/OnboardingScreen';
 import BaseOnboardingPurpose from './BaseOnboardingPurpose';
 import type {OnboardingPurposeProps} from './types';
 

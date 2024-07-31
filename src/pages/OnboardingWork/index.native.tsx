@@ -1,6 +1,6 @@
 import React from 'react';
-import BaseOnboardingWork from './BaseOnboardingWork';
 import OnboardingScreen from '@pages/OnboardingScreen';
+import BaseOnboardingWork from './BaseOnboardingWork';
 import type {OnboardingWorkProps} from './types';
 
 function OnboardingWork({...rest}: Omit<OnboardingWorkProps, 'shouldUseNativeStyles'>) {

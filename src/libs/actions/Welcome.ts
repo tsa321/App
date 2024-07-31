@@ -8,16 +8,16 @@ import variables from '@styles/variables';
 import type {OnboardingPurposeType} from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
+import type {Route} from '@src/ROUTES';
 import type Onboarding from '@src/types/onyx/Onboarding';
 import type TryNewDot from '@src/types/onyx/TryNewDot';
-import navigationRef from '@libs/Navigation/navigationRef';
 
 type OnboardingData = Onboarding | [] | undefined;
 
 let isLoadingReportData = true;
 let tryNewDotData: TryNewDot | undefined;
-let selectedPurpose : string | undefined;
-let onboardingLastVisitedPath : string | undefined;
+let selectedPurpose: string | undefined;
+let onboardingLastVisitedPath: string | undefined;
 
 type HasCompletedOnboardingFlowProps = {
     onCompleted?: () => void;
@@ -147,12 +147,12 @@ function setOnboardingLastVisitedPath(value: string) {
     Onyx.set(ONYXKEYS.ONBOARDING_LAST_VISITED, value ?? null);
 }
 
-function getInitialOnboardingPath() {
+function getInitialOnboardingPath(): Route {
     if (!selectedPurpose || !onboardingLastVisitedPath) {
-        return ROUTES.ONBOARDING_ROOT.getRoute();
+        return ROUTES.ONBOARDING_ROOT.getRoute() as Route;
     }
 
-    return onboardingLastVisitedPath;
+    return onboardingLastVisitedPath as Route;
 }
 
 function completeHybridAppOnboarding() {
@@ -194,7 +194,6 @@ Onyx.connect({
     },
 });
 
-ONYXKEYS.ONBOARDING_LAST_VISITED
 Onyx.connect({
     key: ONYXKEYS.ONBOARDING_PURPOSE_SELECTED,
     callback: (value) => {

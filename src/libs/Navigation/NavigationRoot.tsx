@@ -18,7 +18,6 @@ import * as Welcome from '@userActions/Welcome';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import type {Route} from '@src/ROUTES';
-import ROUTES from '@src/ROUTES';
 import AppNavigator from './AppNavigator';
 import getPolicyIDFromState from './getPolicyIDFromState';
 import linkingConfig from './linkingConfig';

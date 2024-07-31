@@ -1,6 +1,5 @@
 import React from 'react';
 import {View} from 'react-native';
-import FocusTrapForScreens from '@components/FocusTrap/FocusTrapForScreen';
 import useThemeStyles from '@hooks/useThemeStyles';
 import OnboardingScreen from '@pages/OnboardingScreen';
 import BaseOnboardingWork from './BaseOnboardingWork';
