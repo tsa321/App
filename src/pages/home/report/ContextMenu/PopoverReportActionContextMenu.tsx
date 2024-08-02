@@ -243,6 +243,10 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
 
     /** After Popover hides, call the registered onPopoverHide & onPopoverHideActionCallback callback and reset it */
     const runAndResetOnPopoverHide = (id) => {
+        if (!id) {
+            runAndResetOnPopoverHide(instanceID);
+            return;
+        }
         reportIDRef.current = '-1';
         reportActionIDRef.current = '-1';
         originalReportIDRef.current = '-1';
