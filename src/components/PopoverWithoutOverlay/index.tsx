@@ -9,6 +9,7 @@ import useThemeStyles from '@hooks/useThemeStyles';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import variables from '@styles/variables';
 import * as Modal from '@userActions/Modal';
+import usePrevious from '@hooks/usePrevious';
 import viewRef from '@src/types/utils/viewRef';
 import type PopoverWithoutOverlayProps from './types';
 
@@ -24,11 +25,13 @@ function PopoverWithoutOverlay(
         onClose,
         onModalHide = () => {},
         children,
+        instanceID,
     }: PopoverWithoutOverlayProps,
     ref: ForwardedRef<View>,
 ) {
     const styles = useThemeStyles();
     const StyleUtils = useStyleUtils();
+    const prevInstaceID = usePrevious(instanceID);
     const {onOpen, close} = useContext(PopoverContext);
     const {windowWidth, windowHeight} = useWindowDimensions();
     const insets = useSafeAreaInsets();
@@ -47,6 +50,9 @@ function PopoverWithoutOverlay(
 
     useEffect(() => {
         let removeOnClose: () => void;
+        if (instanceID !== prevInstaceID) {
+            onModalHide(prevInstaceID);
+        }
         if (isVisible) {
             onModalShow();
             onOpen?.({
@@ -56,7 +62,7 @@ function PopoverWithoutOverlay(
             });
             removeOnClose = Modal.setCloseModal(onClose);
         } else {
-            onModalHide();
+            onModalHide(instanceID);
             close(anchorRef);
             Modal.onModalDidClose();
         }
@@ -70,7 +76,7 @@ function PopoverWithoutOverlay(
         };
         // We want this effect to run strictly ONLY when isVisible prop changes
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    }, [isVisible]);
+    }, [isVisible, instanceID]);
 
     const {
         paddingTop: safeAreaPaddingTop,

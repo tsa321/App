@@ -12,6 +12,7 @@ import calculateAnchorPosition from '@libs/calculateAnchorPosition';
 import * as ReportActionsUtils from '@libs/ReportActionsUtils';
 import * as IOU from '@userActions/IOU';
 import * as Report from '@userActions/Report';
+import usePrevious from '@hooks/usePrevious';
 import type {AnchorDimensions} from '@src/styles';
 import type {ReportAction} from '@src/types/onyx';
 import BaseReportActionContextMenu from './BaseReportActionContextMenu';
@@ -52,6 +53,7 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
     });
 
     const [instanceID, setInstanceID] = useState('');
+    const prevInstanceID = usePrevious(instanceID);
 
     const [isPopoverVisible, setIsPopoverVisible] = useState(false);
     const [isDeleteCommentConfirmModalVisible, setIsDeleteCommentConfirmModalVisible] = useState(false);
@@ -75,7 +77,7 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
     });
 
     const onPopoverShow = useRef(() => {});
-    const onPopoverHide = useRef(() => {});
+    const onPopoverHide = useRef({});
     const onEmojiPickerToggle = useRef<undefined | ((state: boolean) => void)>();
     const onCancelDeleteModal = useRef(() => {});
     const onComfirmDeleteModal = useRef(() => {});
@@ -180,10 +182,10 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
         } else {
             anchorRef.current = null;
         }
-        setInstanceID(Math.random().toString(36).substr(2, 5));
-
+        const newID = Math.random().toString(36).substr(2, 5)
+        setInstanceID(newID);
+        onPopoverHide.current[newID] = onHide;
         onPopoverShow.current = onShow;
-        onPopoverHide.current = onHide;
         onEmojiPickerToggle.current = setIsEmojiPickerActive;
 
         new Promise<void>((resolve) => {
@@ -224,8 +226,10 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
     };
 
     /** After Popover shows, call the registered onPopoverShow callback and reset it */
-    const runAndResetOnPopoverShow = () => {
-        onPopoverShow.current();
+    const runAndResetOnPopoverShow = (id) => {
+        if (onPopoverShow.current) {
+            onPopoverShow.current();
+        }
 
         // After we have called the action, reset it.
         onPopoverShow.current = () => {};
@@ -233,17 +237,25 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
 
     /** Run the callback and return a noop function to reset it */
     const runAndResetCallback = (callback: () => void) => {
-        callback();
+        if (callback) {callback()}
         return () => {};
     };
 
     /** After Popover hides, call the registered onPopoverHide & onPopoverHideActionCallback callback and reset it */
-    const runAndResetOnPopoverHide = () => {
+    const runAndResetOnPopoverHide = (id) => {
         reportIDRef.current = '-1';
         reportActionIDRef.current = '-1';
         originalReportIDRef.current = '-1';
 
-        onPopoverHide.current = runAndResetCallback(onPopoverHide.current);
+        if (onPopoverHide.current[id]) {
+            runAndResetCallback(onPopoverHide.current[id]);
+        }
+
+        // delete all beside current instanceID and prevInstanceID
+        Object.keys(onPopoverHide.current).forEach((id) => { 
+          if (id !== instanceID && id !== prevInstanceID) {
+            delete onPopoverHide.current[id];
+          }});
         onPopoverHideActionCallback.current = runAndResetCallback(onPopoverHideActionCallback.current);
     };
 
@@ -320,6 +332,7 @@ function PopoverReportActionContextMenu(_props: unknown, ref: ForwardedRef<Repor
             <PopoverWithMeasuredContent
                 isVisible={isPopoverVisible}
                 onClose={hideContextMenu}
+                instanceID={instanceID}
                 onModalShow={runAndResetOnPopoverShow}
                 onModalHide={runAndResetOnPopoverHide}
                 anchorPosition={popoverAnchorPosition.current}

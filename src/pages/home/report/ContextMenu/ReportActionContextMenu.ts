@@ -127,7 +127,7 @@ function showContextMenu(
     // a new one.
     if (contextMenuRef.current.instanceID) {
         hideContextMenu();
-        contextMenuRef.current.runAndResetOnPopoverHide();
+        //contextMenuRef.current.runAndResetOnPopoverHide();
     }
 
     contextMenuRef.current.showContextMenu(
