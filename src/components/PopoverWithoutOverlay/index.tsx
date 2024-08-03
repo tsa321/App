@@ -50,9 +50,6 @@ function PopoverWithoutOverlay(
 
     useEffect(() => {
         let removeOnClose: () => void;
-        if (instanceID !== prevInstaceID) {
-            onModalHide(prevInstaceID);
-        }
         if (isVisible) {
             onModalShow();
             onOpen?.({
@@ -62,7 +59,11 @@ function PopoverWithoutOverlay(
             });
             removeOnClose = Modal.setCloseModal(onClose);
         } else {
-            onModalHide(instanceID);
+            if (instanceID !== prevInstaceID) {
+                onModalHide(prevInstaceID);
+            } else {
+                onModalHide(instanceID);
+            }
             close(anchorRef);
             Modal.onModalDidClose();
         }
