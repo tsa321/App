@@ -30,7 +30,6 @@ function PopoverContextProvider(props: PopoverContextProps) {
 
         activePopoverRef.current.close();
         activePopoverRef.current = null;
-        instanceIDRef.current = null;
         setIsOpen(false);
         return true;
     }, []);
