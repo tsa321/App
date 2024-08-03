@@ -20,6 +20,7 @@ function elementContains(ref: RefObject<View | HTMLElement | Text> | undefined, 
 
 function PopoverContextProvider(props: PopoverContextProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const instanceIDRef = useRef();
     const activePopoverRef = useRef<AnchorRef | null>(null);
 
     const closePopover = useCallback((anchorRef?: RefObject<View | HTMLElement | Text>): boolean => {
@@ -29,6 +30,7 @@ function PopoverContextProvider(props: PopoverContextProps) {
 
         activePopoverRef.current.close();
         activePopoverRef.current = null;
+        instanceIDRef.current = null;
         setIsOpen(false);
         return true;
     }, []);
@@ -108,10 +110,15 @@ function PopoverContextProvider(props: PopoverContextProps) {
                 closePopover(activePopoverRef.current.anchorRef);
             }
             activePopoverRef.current = popoverParams;
+            instanceIDRef.current = popoverParams.instanceID;
             setIsOpen(true);
         },
         [closePopover],
     );
+
+    const getContextInstaceID = () => {
+        return instanceIDRef.current;
+    };
 
     const contextValue = useMemo(
         () => ({
@@ -119,6 +126,7 @@ function PopoverContextProvider(props: PopoverContextProps) {
             close: closePopover,
             popover: activePopoverRef.current,
             isOpen,
+            getContextInstaceID,
         }),
         [onOpen, closePopover, isOpen],
     );
