@@ -1,14 +1,14 @@
 import React from 'react';
 import {View} from 'react-native';
+import FocusTrapForScreens from '@components/FocusTrap/FocusTrapForScreen';
 import useThemeStyles from '@hooks/useThemeStyles';
-import OnboardingScreen from '@pages/OnboardingScreen';
 import BaseOnboardingWork from './BaseOnboardingWork';
 import type {OnboardingWorkProps} from './types';
 
 function OnboardingWork({...rest}: Omit<OnboardingWorkProps, 'shouldUseNativeStyles'>) {
     const styles = useThemeStyles();
     return (
-        <OnboardingScreen>
+        <FocusTrapForScreens>
             <View style={styles.h100}>
                 <BaseOnboardingWork
                     shouldUseNativeStyles={false}
@@ -16,7 +16,7 @@ function OnboardingWork({...rest}: Omit<OnboardingWorkProps, 'shouldUseNativeSty
                     {...rest}
                 />
             </View>
-        </OnboardingScreen>
+        </FocusTrapForScreens>
     );
 }
 

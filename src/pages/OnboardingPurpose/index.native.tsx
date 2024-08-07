@@ -1,7 +1,6 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback} from 'react';
 import {BackHandler} from 'react-native';
-import OnboardingScreen from '@pages/OnboardingScreen';
 import BaseOnboardingPurpose from './BaseOnboardingPurpose';
 import type {OnboardingPurposeProps} from './types';
 
@@ -19,14 +18,12 @@ function OnboardingPurpose({...rest}: OnboardingPurposeProps) {
     );
 
     return (
-        <OnboardingScreen>
-            <BaseOnboardingPurpose
-                shouldUseNativeStyles
-                shouldEnableMaxHeight={false}
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...rest}
-            />
-        </OnboardingScreen>
+        <BaseOnboardingPurpose
+            shouldUseNativeStyles
+            shouldEnableMaxHeight={false}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...rest}
+        />
     );
 }
 

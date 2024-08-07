@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
+import FocusTrapForScreens from '@components/FocusTrap/FocusTrapForScreen';
 import useThemeStyles from '@hooks/useThemeStyles';
-import OnboardingScreen from '@pages/OnboardingScreen';
 import BaseOnboardingPurpose from './BaseOnboardingPurpose';
 import type {OnboardingPurposeProps} from './types';
 
@@ -9,7 +9,7 @@ function OnboardingPurpose({...rest}: OnboardingPurposeProps) {
     const styles = useThemeStyles();
 
     return (
-        <OnboardingScreen>
+        <FocusTrapForScreens>
             <View style={styles.h100}>
                 <BaseOnboardingPurpose
                     shouldUseNativeStyles={false}
@@ -18,7 +18,7 @@ function OnboardingPurpose({...rest}: OnboardingPurposeProps) {
                     {...rest}
                 />
             </View>
-        </OnboardingScreen>
+        </FocusTrapForScreens>
     );
 }
 
