@@ -211,11 +211,7 @@ Onyx.connect({
             return;
         }
 
-        lastVisitedPath = value?.[0] === '/') {
-            lastVisitedPath = value.substring(1);
-        } else {
-            lastVisitedPath = value;
-        }
+        lastVisitedPath = Array.from(value)[0] === '/' ? value.substring(1) : value;
     },
 });
 
