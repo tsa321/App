@@ -4,11 +4,13 @@ import Onyx from 'react-native-onyx';
 import * as API from '@libs/API';
 import {WRITE_COMMANDS} from '@libs/API/types';
 import Navigation from '@libs/Navigation/Navigation';
+import getStateFromPath from '@navigation/getStateFromPath';
 import variables from '@styles/variables';
 import type {OnboardingPurposeType} from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
 import type {Route} from '@src/ROUTES';
+import SCREENS from '@src/SCREENS';
 import type Onboarding from '@src/types/onyx/Onboarding';
 import type TryNewDot from '@src/types/onyx/TryNewDot';
 
@@ -17,7 +19,7 @@ type OnboardingData = Onboarding | [] | undefined;
 let isLoadingReportData = true;
 let tryNewDotData: TryNewDot | undefined;
 let selectedPurpose: string | undefined;
-let onboardingLastVisitedPath: string | undefined;
+let lastVisitedPath: string | undefined;
 
 type HasCompletedOnboardingFlowProps = {
     onCompleted?: () => void;
@@ -143,16 +145,13 @@ function setOnboardingPolicyID(policyID?: string) {
     Onyx.set(ONYXKEYS.ONBOARDING_POLICY_ID, policyID ?? null);
 }
 
-function setOnboardingLastVisitedPath(value: string) {
-    Onyx.set(ONYXKEYS.ONBOARDING_LAST_VISITED, value ?? null);
-}
-
 function getInitialOnboardingPath(): Route {
-    if (!selectedPurpose || !onboardingLastVisitedPath) {
+    const state = getStateFromPath(lastVisitedPath ?? '');
+    if (!selectedPurpose || !lastVisitedPath || state?.routes?.[1]?.name === SCREENS.NOT_FOUND) {
         return ROUTES.ONBOARDING_ROOT.getRoute() as Route;
     }
 
-    return onboardingLastVisitedPath as Route;
+    return lastVisitedPath as Route;
 }
 
 function completeHybridAppOnboarding() {
@@ -206,13 +205,17 @@ Onyx.connect({
 });
 
 Onyx.connect({
-    key: ONYXKEYS.ONBOARDING_LAST_VISITED,
+    key: ONYXKEYS.LAST_VISITED_PATH,
     callback: (value) => {
         if (value === undefined) {
             return;
         }
 
-        onboardingLastVisitedPath = value;
+        lastVisitedPath = value?.[0] === '/') {
+            lastVisitedPath = value.substring(1);
+        } else {
+            lastVisitedPath = value;
+        }
     },
 });
 
@@ -251,7 +254,6 @@ export {
     resetAllChecks,
     setOnboardingAdminsChatReportID,
     setOnboardingPolicyID,
-    setOnboardingLastVisitedPath,
     completeHybridAppOnboarding,
     handleHybridAppOnboarding,
     setOnboardingErrorMessage,
