@@ -95,7 +95,10 @@ function NavigationRoot({authenticated, lastVisitedPath, initialUrl, onReady, sh
     const initialState = useMemo(() => {
         const path = initialUrl ? getPathFromURL(initialUrl) : null;
         if (authenticated && path === lastVisitedPath.substring(1)) {
-            return getLastNavigationState();
+            const lastState = getLastNavigationState();
+            if(lastState) {
+                return lastState
+            }
         }
 
         if (!user || user.isFromPublicDomain) {
