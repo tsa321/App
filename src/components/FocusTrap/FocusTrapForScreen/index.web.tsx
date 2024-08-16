@@ -1,6 +1,6 @@
 import {useIsFocused, useRoute} from '@react-navigation/native';
 import FocusTrap from 'focus-trap-react';
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useRef} from 'react';
 import BOTTOM_TAB_SCREENS from '@components/FocusTrap/BOTTOM_TAB_SCREENS';
 import sharedTrapStack from '@components/FocusTrap/sharedTrapStack';
 import TOP_TAB_SCREENS from '@components/FocusTrap/TOP_TAB_SCREENS';
@@ -14,6 +14,7 @@ function FocusTrapForScreen({children, focusTrapSettings}: FocusTrapProps) {
     const isFocused = useIsFocused();
     const route = useRoute();
     const {isSmallScreenWidth} = useWindowDimensions();
+    const activeElement = useRef();
 
     const isActive = useMemo(() => {
         if (typeof focusTrapSettings?.active !== 'undefined') {
@@ -42,26 +43,22 @@ function FocusTrapForScreen({children, focusTrapSettings}: FocusTrapProps) {
             paused={!isFocused}
             containerElements={focusTrapSettings?.containerElements?.length ? focusTrapSettings.containerElements : undefined}
             focusTrapOptions={{
+                onActivate: () => {
+                    activeElement.current = document?.activeElement;
+                    activeElement?.current?.blur();
+                },
                 trapStack: sharedTrapStack,
                 allowOutsideClick: true,
                 fallbackFocus: document.body,
                 delayInitialFocus: CONST.ANIMATED_TRANSITION,
+                onDeactivate: () => {
+                    activeElement?.current?.focus();
+                },
                 initialFocus: (focusTrapContainers) => {
-                    if (!canFocusInputOnScreenFocus()) {
-                        return false;
-                    }
-
-                    const isFocusedElementInsideContainer = focusTrapContainers?.some((container) => container.contains(document.activeElement));
-                    if (isFocusedElementInsideContainer) {
-                        return false;
-                    }
-                    return undefined;
+                    return false;
                 },
                 setReturnFocus: (element) => {
-                    if (document.activeElement && document.activeElement !== document.body) {
-                        return false;
-                    }
-                    return element;
+                    return false;
                 },
                 ...(focusTrapSettings?.focusTrapOptions ?? {}),
             }}
