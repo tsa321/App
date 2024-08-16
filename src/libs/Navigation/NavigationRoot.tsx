@@ -14,6 +14,7 @@ import hasCompletedGuidedSetupFlowSelector from '@libs/hasCompletedGuidedSetupFl
 import Log from '@libs/Log';
 import {getPathFromURL} from '@libs/Url';
 import {updateLastVisitedPath} from '@userActions/App';
+import {getLastNavigationState, updateLastNavigationState} from '@userActions/NavigationState';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import type {Route} from '@src/ROUTES';
@@ -58,6 +59,7 @@ function parseAndLogRoute(state: NavigationState) {
 
     if (focusedRoute && !CONST.EXCLUDE_FROM_LAST_VISITED_PATH.includes(focusedRoute?.name)) {
         updateLastVisitedPath(currentPath);
+        updateLastNavigationState(state);
     }
 
     // Don't log the route transitions from OldDot because they contain authTokens
@@ -91,6 +93,11 @@ function NavigationRoot({authenticated, lastVisitedPath, initialUrl, onReady, sh
     });
 
     const initialState = useMemo(() => {
+        const path = initialUrl ? getPathFromURL(initialUrl) : null;
+        if (authenticated && path === lastVisitedPath.substring(1)) {
+            return getLastNavigationState();
+        }
+
         if (!user || user.isFromPublicDomain) {
             return;
         }
@@ -106,8 +113,6 @@ function NavigationRoot({authenticated, lastVisitedPath, initialUrl, onReady, sh
         if (!lastVisitedPath) {
             return undefined;
         }
-
-        const path = initialUrl ? getPathFromURL(initialUrl) : null;
 
         // If the user opens the root of app "/" it will be parsed to empty string "".
         // If the path is defined and different that empty string we don't want to modify the default behavior.
