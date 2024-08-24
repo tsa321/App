@@ -15,11 +15,13 @@ import interceptAnonymousUser from '@libs/interceptAnonymousUser';
 import linkingConfig from '@libs/Navigation/linkingConfig';
 import getAdaptedStateFromPath from '@libs/Navigation/linkingConfig/getAdaptedStateFromPath';
 import Navigation, {navigationRef} from '@libs/Navigation/Navigation';
-import type {RootStackParamList, State} from '@libs/Navigation/types';
-import {isCentralPaneName} from '@libs/NavigationUtils';
+import Navigation, {navigationRef} from '@libs/Navigation/Navigation';
+import Navigation, {navigationRef} from '@libs/Navigation/Navigation';
+import Navigation, {navigationRef} from '@libs/Navigation/Navigation';
 import * as PolicyUtils from '@libs/PolicyUtils';
-import {getCurrentSearchParams} from '@libs/SearchUtils';
 import type {BrickRoad} from '@libs/WorkspacesSettingsUtils';
+import {getChatTabBrickRoad} from '@libs/WorkspacesSettingsUtils';
+import {getChatTabBrickRoad} from '@libs/WorkspacesSettingsUtils';
 import {getChatTabBrickRoad} from '@libs/WorkspacesSettingsUtils';
 import BottomTabAvatar from '@pages/home/sidebar/BottomTabAvatar';
 import BottomTabBarFloatingActionButton from '@pages/home/sidebar/BottomTabBarFloatingActionButton';
@@ -47,6 +49,9 @@ function BottomTabBar({selectedTab}: BottomTabBarProps) {
     const [chatTabBrickRoad, setChatTabBrickRoad] = useState<BrickRoad>(getChatTabBrickRoad(activeWorkspaceID));
 
     useEffect(() => {
+    useEffect(() => {
+    useEffect(() => {
+    useEffect(() => {
         setChatTabBrickRoad(getChatTabBrickRoad(activeWorkspaceID));
     }, [activeWorkspaceID, transactionViolations]);
 
@@ -54,12 +59,14 @@ function BottomTabBar({selectedTab}: BottomTabBarProps) {
         const navigationState = navigation.getState() as State<RootStackParamList> | undefined;
         const routes = navigationState?.routes;
         const currentRoute = routes?.[navigationState?.index ?? 0];
-        // When we are redirected to the Settings tab from the OldDot, we don't want to call the Welcome.show() method.
         // To prevent this, the value of the bottomTabRoute?.name is checked here
         if (!!(currentRoute && currentRoute.name !== NAVIGATORS.BOTTOM_TAB_NAVIGATOR && !isCentralPaneName(currentRoute.name)) || Session.isAnonymousUser()) {
             return;
         }
 
+        // HybridApp has own entry point when we decide whether to display onboarding and explanation modal.
+        // HybridApp has own entry point when we decide whether to display onboarding and explanation modal.
+        // HybridApp has own entry point when we decide whether to display onboarding and explanation modal.
         // HybridApp has own entry point when we decide whether to display onboarding and explanation modal.
         if (NativeModules.HybridAppModule) {
             return;
@@ -72,7 +79,6 @@ function BottomTabBar({selectedTab}: BottomTabBarProps) {
             },
         });
 
-        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
     }, [isLoadingApp]);
 
     const navigateToChats = useCallback(() => {

@@ -337,18 +337,26 @@ function ReportScreen({route, currentReportID = '', navigation}: ReportScreenPro
                 policy={policy}
                 parentReportAction={parentReportAction}
                 shouldUseNarrowLayout={shouldUseNarrowLayout}
-                onBackButtonPress={onBackButtonPress}
+                shouldUseNarrowLayout={shouldUseNarrowLayout}
+                shouldUseNarrowLayout={shouldUseNarrowLayout}
             />
         );
     }
 
     useEffect(() => {
-        if (!transactionThreadReportID || !route?.params?.reportActionID || !ReportUtils.isOneTransactionThread(linkedAction?.childReportID ?? '-1', report.reportID, linkedAction)) {
+    useEffect(() => {
+    useEffect(() => {
+    useEffect(() => {
+    useEffect(() => {
+    useEffect(() => {
             return;
         }
-        Navigation.navigate(ROUTES.REPORT_WITH_ID.getRoute(route?.params?.reportID));
     }, [transactionThreadReportID, route?.params?.reportActionID, route?.params?.reportID, linkedAction, report.reportID]);
 
+    if (ReportUtils.isMoneyRequestReport(report) || ReportUtils.isInvoiceReport(report)) {
+    if (ReportUtils.isMoneyRequestReport(report) || ReportUtils.isInvoiceReport(report)) {
+    if (ReportUtils.isMoneyRequestReport(report) || ReportUtils.isInvoiceReport(report)) {
+    if (ReportUtils.isMoneyRequestReport(report) || ReportUtils.isInvoiceReport(report)) {
     if (ReportUtils.isMoneyRequestReport(report) || ReportUtils.isInvoiceReport(report)) {
         headerView = (
             <MoneyReportHeader
@@ -363,7 +371,6 @@ function ReportScreen({route, currentReportID = '', navigation}: ReportScreenPro
     }
 
     /**
-     * When false the ReportActionsView will completely unmount and we will show a loader until it returns true.
      */
     const isCurrentReportLoadedFromOnyx = useMemo((): boolean => {
         // This is necessary so that when we are retrieving the next report data from Onyx the ReportActionsView will remount completely
@@ -384,7 +391,6 @@ function ReportScreen({route, currentReportID = '', navigation}: ReportScreenPro
 
     /**
      * Using logical OR operator because with nullish coalescing operator, when `isLoadingApp` is false, the right hand side of the operator
-     * is not evaluated. This causes issues where we have `isLoading` set to false and later set to true and then set to false again.
      * Ideally, `isLoading` should be set initially to true and then set to false. We can achieve this by using logical OR operator.
      */
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
