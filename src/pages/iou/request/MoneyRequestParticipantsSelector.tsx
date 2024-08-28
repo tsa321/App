@@ -184,6 +184,7 @@ function MoneyRequestParticipantsSelector({participants = CONST.EMPTY_ARRAY, onF
             debouncedSearchTerm,
             participants.map((participant) => ({...participant, reportID: participant.reportID ?? '-1'})),
             chatOptions.recentReports,
+            chatOptions.olderReports,
             chatOptions.personalDetails,
             personalDetails,
             true,
@@ -194,8 +195,15 @@ function MoneyRequestParticipantsSelector({participants = CONST.EMPTY_ARRAY, onF
         newSections.push({
             title: translate('common.recents'),
             data: chatOptions.recentReports,
-            shouldShow: chatOptions.recentReports.length > 0,
+            shouldShow: chatOptions.recentReports?.length > 0,
         });
+
+        newSections.push({
+            title: 'Chat',
+            data: chatOptions.olderReports,
+            shouldShow: chatOptions.olderReports?.length > 0,
+        });
+
 
         newSections.push({
             title: translate('common.contacts'),
@@ -203,6 +211,7 @@ function MoneyRequestParticipantsSelector({participants = CONST.EMPTY_ARRAY, onF
             shouldShow: chatOptions.personalDetails.length > 0,
         });
 
+        
         if (
             chatOptions.userToInvite &&
             !OptionsListUtils.isCurrentUser({...chatOptions.userToInvite, accountID: chatOptions.userToInvite?.accountID ?? -1, status: chatOptions.userToInvite?.status ?? undefined})
@@ -352,7 +361,7 @@ function MoneyRequestParticipantsSelector({participants = CONST.EMPTY_ARRAY, onF
         }
         let length = 0;
         sections.forEach((section) => {
-            length += section.data.length;
+            length += section.data?.length ?? 0;
         });
         return length;
     }, [areOptionsInitialized, sections]);

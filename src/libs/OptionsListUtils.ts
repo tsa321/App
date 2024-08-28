@@ -2309,6 +2309,7 @@ function formatSectionsFromSearchTerm(
     searchTerm: string,
     selectedOptions: ReportUtils.OptionData[],
     filteredRecentReports: ReportUtils.OptionData[],
+    filteredOlderReports,
     filteredPersonalDetails: ReportUtils.OptionData[],
     personalDetails: OnyxEntry<PersonalDetailsList> = {},
     shouldGetOptionDetails = false,
@@ -2338,6 +2339,7 @@ function formatSectionsFromSearchTerm(
         const accountID = participant.accountID ?? null;
         const isPartOfSearchTerm = getPersonalDetailSearchTerms(participant).join(' ').toLowerCase().includes(cleanSearchTerm);
         const isReportInRecentReports = filteredRecentReports.some((report) => report.accountID === accountID);
+        const isReportInOlderReport = filteredOlderReports.some((report) => report.accountID === accountID);
         const isReportInPersonalDetails = filteredPersonalDetails.some((personalDetail) => personalDetail.accountID === accountID);
         return isPartOfSearchTerm && !isReportInRecentReports && !isReportInPersonalDetails;
     });
@@ -2388,8 +2390,9 @@ function filterOptions(options: Options, searchInputValue: string, config?: Filt
         preferChatroomsOverThreads = false,
         preferPolicyExpenseChat = false,
     } = config ?? {};
+
     if (searchInputValue.trim() === '' && maxRecentReportsToShow > 0) {
-        return {...options, recentReports: options.recentReports.slice(0, maxRecentReportsToShow)};
+        return {...options, recentReports: options.recentReports.slice(0, maxRecentReportsToShow), olderReports: options.recentReports.slice(maxRecentReportsToShow)};
     }
 
     const parsedPhoneNumber = PhoneNumber.parsePhoneNumber(LoginUtils.appendCountryCode(Str.removeSMSDomain(searchInputValue)));
@@ -2462,13 +2465,15 @@ function filterOptions(options: Options, searchInputValue: string, config?: Filt
         }
     }
 
+    let olderReports;
     if (maxRecentReportsToShow > 0 && recentReports.length > maxRecentReportsToShow) {
-        recentReports.splice(maxRecentReportsToShow);
+        olderReports = recentReports.splice(maxRecentReportsToShow);
     }
 
     return {
         personalDetails,
         recentReports: orderOptions(recentReports, searchValue, {preferChatroomsOverThreads, preferPolicyExpenseChat}),
+        olderReports,
         userToInvite,
         currentUserOption: matchResults.currentUserOption,
         categoryOptions: [],
