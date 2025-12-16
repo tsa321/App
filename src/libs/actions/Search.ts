@@ -1151,7 +1151,8 @@ function getTotalFormattedAmount(selectedReports: SelectedReports[], selectedTra
  * Note: we don't create anything new, we just optimistically generate the data that we know will be returned by API.
  */
 function setOptimisticDataForTransactionThreadPreview(item: TransactionListItemType, transactionPreviewData: TransactionPreviewData, IOUTransactionID?: string) {
-    const {reportID, report, amount, currency, transactionID, created, policyID} = item;
+    const {reportID, report, amount, currency, transactionID, created, policyID, from} = item;
+    console.log({item});
     const moneyRequestReportActionID = item?.reportAction?.reportActionID;
     const {hasParentReport, hasParentReportAction, hasTransaction, hasTransactionThreadReport} = transactionPreviewData;
     const onyxUpdates: OnyxUpdate[] = [];
@@ -1181,6 +1182,7 @@ function setOptimisticDataForTransactionThreadPreview(item: TransactionListItemT
             linkedExpenseReportAction: {childReportID: IOUTransactionID} as ReportAction,
         });
         optimisticIOUAction.pendingAction = undefined;
+        optimisticIOUAction.actorAccountID = from?.accountID;
         onyxUpdates.push({
             onyxMethod: Onyx.METHOD.MERGE,
             key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${reportID}`,
