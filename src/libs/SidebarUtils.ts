@@ -275,7 +275,12 @@ function getReportsToDisplayInLHN(
         );
 
         if (shouldDisplay) {
-            reportsToDisplay[reportID] = hasErrorsOtherThanFailedReceipt ? {...report, hasErrorsOtherThanFailedReceipt: true} : report;
+            const requiresAttention = reportAttributes?.[report?.reportID]?.requiresAttention
+            if (requiresAttention !== report?.requiresAttention || hasErrorsOtherThanFailedReceipt) {
+                reportsToDisplay[reportID] = {...report, requiresAttention, hasErrorsOtherThanFailedReceipt}
+            } else {
+                reportsToDisplay[reportID] = report;
+            }
         }
     }
 
@@ -331,7 +336,12 @@ function updateReportsToDisplayInLHN({
         );
 
         if (shouldDisplay) {
-            displayedReportsCopy[reportID] = hasErrorsOtherThanFailedReceipt ? {...report, hasErrorsOtherThanFailedReceipt: true} : report;
+            const requiresAttention = reportAttributes?.[report?.reportID]?.requiresAttention
+            if (requiresAttention !== report?.requiresAttention || hasErrorsOtherThanFailedReceipt) {
+                displayedReportsCopy[reportID] = {...report, requiresAttention, hasErrorsOtherThanFailedReceipt}
+            } else {
+                displayedReportsCopy[reportID] = report;
+            }
         } else {
             delete displayedReportsCopy[reportID];
         }
@@ -346,7 +356,6 @@ function categorizeReportsForLHN(
     reportsToDisplay: ReportsToDisplayInLHN,
     reportsDrafts: OnyxCollection<string> | undefined,
     reportNameValuePairs?: OnyxCollection<ReportNameValuePairs>,
-    reportAttributes?: ReportAttributesDerivedValue['reports'],
 ) {
     const pinnedAndGBRReports: MiniReport[] = [];
     const errorReports: MiniReport[] = [];
@@ -356,6 +365,7 @@ function categorizeReportsForLHN(
 
     // Pre-calculate report names and other properties to avoid repeated calculations
     const reportValues = Object.values(reportsToDisplay);
+
     const precomputedReports: Array<{
         miniReport: MiniReport;
         isPinned: boolean;
@@ -381,7 +391,7 @@ function categorizeReportsForLHN(
         };
 
         const isPinned = !!report.isPinned;
-        const requiresAttention = !!reportAttributes?.[reportID]?.requiresAttention;
+        const requiresAttention = report?.requiresAttention
         const draftComment = reportsDrafts?.[`${ONYXKEYS.COLLECTION.REPORT_DRAFT_COMMENT}${reportID}`];
         const hasDraft = !!draftComment;
         const reportNameValuePairsKey = `${ONYXKEYS.COLLECTION.REPORT_NAME_VALUE_PAIRS}${reportID}`;
