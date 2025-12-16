@@ -1152,7 +1152,6 @@ function getTotalFormattedAmount(selectedReports: SelectedReports[], selectedTra
  */
 function setOptimisticDataForTransactionThreadPreview(item: TransactionListItemType, transactionPreviewData: TransactionPreviewData, IOUTransactionID?: string) {
     const {reportID, report, amount, currency, transactionID, created, policyID, from} = item;
-    console.log({item});
     const moneyRequestReportActionID = item?.reportAction?.reportActionID;
     const {hasParentReport, hasParentReportAction, hasTransaction, hasTransactionThreadReport} = transactionPreviewData;
     const onyxUpdates: OnyxUpdate[] = [];
